@@ -1,0 +1,429 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>HelloWorld</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.3.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="css/phone/login.css" type="text/css" charset="utf-8">
+<!-- 	<link rel="stylesheet" href="css/phone/main.css" type="text/css" charset="utf-8"> -->
+<!-- 	<link rel="stylesheet" href="css/phone/money.css" type="text/css" charset="utf-8"> -->
+<!-- 	<link rel="stylesheet" href="css/phone/positions.css" type="text/css" charset="utf-8"> -->
+<!-- 	<link rel="stylesheet" href="css/phone/risk.css" type="text/css" charset="utf-8"> -->
+<!-- 	<link rel="stylesheet" href="css/phone/add-account.css" type="text/css" charset="utf-8"> -->
+	
+	<script type="text/javascript" charset="utf-8" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/jquery.mobile-1.4.3.js"></script>
+	    
+	<script type="text/javascript" charset="utf-8" src="js/phone/main.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/risk.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/risk-set-data.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/risk-get-data.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/login.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/add-account.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/money.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/positions.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/account-management.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/phone/risk-control-info.js"></script>
+	
+    <script type="text/javascript" charset="utf-8">
+    
+	    $(function(){
+	    	var height = 0;
+	    	var width = 0;
+	    	height = document.body.scrollHeight;
+	    	width = document.body.scrollWidth;
+	    	$('#login-content').css("height",height-40);
+	    	$('#login-form').css("height",height*0.5);
+	    	//$('#add-account-button').css("height",height*0.10);
+	    	$('#add-content').css("height",(height-40)*0.85);
+	    	
+	    	$('#login-form').css("margin-top",-(height*0.08));
+	    	$('#login-input').css("margin-top",height*0.15);
+	    	$('#money-ui-block-b').css("width",width/2-10);
+	    	$('#money-ui-block-c').css("width",width/2-10);
+	    	
+	    });
+	    
+    </script>
+</head>
+
+<body>
+      <!-- 登录界面 -->
+	<div data-theme="b" data-role="page" id="login">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+			<h1 >用户登录</h1>
+			<div>
+			    <img alt="" src="">
+			</div>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" data-position="inline" id="login-content">
+		    <div>
+		        <div id="content-logo"></div>
+		        <div id="content-logo-text">国金期货</div>
+		    </div>
+		    <div>
+			    <p>国金期货手机客户端</p>
+			</div>
+		    <div id="login-form">
+		      <div id="login-input">
+		        <ul style="list-style-type:none" >
+		          <li>
+		            <span >账号：</span> 
+			        <input type="text" name="username" id="username" /> 
+			      </li>
+			      <li id="name-info" class="login-info" style="display: none;">
+			        <span></span>
+			      </li>
+			      <li>
+			        <span>密码：</span> 
+			        <input type="password" name="password" id="password"/>
+			      </li>
+			      <li id="pwd-info" class="login-info" style="display: none;">
+			        <span></span> 
+			      </li>
+			      <li>
+			        <input type="checkbox" value="checkbox" id="remember-login" />
+			        <span style="margin-left:20px;">记住登陆名</span> 
+			      </li>
+			    </ul>
+			  </div>
+			</div>
+			<div>
+			   <a href="#" id="login-button" data-inline="true"  
+			      data-role="button" data-corners="true" data-transition="slide">登录</a>
+			</div>
+		</div>
+		<!-- /content -->
+	</div>
+
+    <!-- 账户管理主界面 -->
+	<div data-role="page" id="main" data-add-back-btn="false" data-theme="b">
+	
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+		    <a href="#add-account-page" class="button-background" style="background: #2BB8AA;"  data-transition="slide" id="management-add-account-button">添加账户</a>
+			<h1>账户管理</h1>
+			<div class="ui-btn-right" id="operate-select-menu">
+				 
+			</div>
+		</div>
+		<div data-role="content" style="position: absolute;width: 100%;" class="page-content" >
+			<div
+				style="transition-property: transform; transform-origin: 0px 0px 0px; transform: translate(0px, 0px) scale(1) translateZ(0px);"
+				id="scrollerIndex" class="scroller">
+				<ul data-role="listview" id="contentList"
+					class="contentList ">
+				</ul>
+			</div>
+		</div>
+		
+		<div id="footer" class="nav-style" data-role="footer" data-theme="a" data-tap-toggle="false"
+				data-position="fixed">
+				<div data-role="navbar" data-grid="b" class="nav-style">
+					<ul>
+						<li  class="ui-btn-active">
+							<a href="#main" id="main-account-management" class="tab" data-transition="slide" >账户管理</a>
+						</li>
+						<li>
+							<a href="#money-management-page" id="money" data-transition="slide" >资金</a>
+						</li>
+						<li>
+							<a href="#positions-page" id="positions" data-transition="slide" >持仓</a>
+						</li>
+					</ul>
+			 </div>
+		</div>
+	</div>
+	<!-- 弹出框 1 -->
+	<div data-role="page" id="dialogPage">
+		<div data-role="header">
+			<h2>操作</h2>
+		</div>
+		<div role="main" class="ui-content">
+			<ul id="account-management-alert"
+					class="contentList ui-listview">
+				<li id="dialog-control-info">
+					<div class="ui-btn-inner ui-li">
+						<a href="#risk-detail-page">风控消息查阅</a>
+					</div>
+				</li>
+				<li id="dialog-risk-control-set"><div class="ui-btn-inner ui-li">
+						<a href="#">风控指标设置</a>
+					</div>
+				</li>
+				<li id="dialog-basic-info"><div class="ui-btn-inner ui-li">
+						<a  href="#add-account-page" >账户基本信息</a>
+					</div>
+				</li>
+				<li id="dialog-delete-account"><div class="ui-btn-inner ui-li">
+						<a href="#main">删除账户</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<!-- 风控消息查阅页面 -->
+	<div data-theme="b" data-role="page" id="risk-detail-page" data-add-back-btn="false" style="display: none">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+		    <a href="#main" class="button-background" style="background: #2BB8AA;">账户列表</a>
+			<h1>风控消息查阅</h1>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" id="risk-detail-content" class="page-content">
+			<div data-role="tabs" id="tabs">
+				<div data-role="navbar" style="width:50%;">
+					<ul>
+						<li id="risk-control-warning-button01" >
+						    <a href="#one" data-ajax="false" class="ui-btn-active">警告</a>
+						</li>
+						<li id="risk-control-close-button02">
+						    <a href="#two" data-ajax="false" >强平</a>
+						</li>
+					</ul>
+				</div>
+				<div id="one" style="margin-top:0px;padding:0px;" class="risk-control-info-list">
+					<div id="risk-control-info-list01" 
+					style="color:#000;padding:5px;margin-left: 0px;" >
+					</div>
+				</div>
+				<div id="two" style="margin-top:0px;padding:0px;" class="risk-control-info-list">
+					<div id="risk-control-info-list02"
+					style="color:#000;padding:5px;margin-left: 0px;" >
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- 添加账户 页面 -->
+	<div data-theme="b" data-role="page" id="add-account-page" data-add-back-btn="false" style="display: none">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+		    <a href="#main" class="button-background" style="background: #2BB8AA;" data-transition="slide">账户列表</a>
+			<h1>添加账户</h1>
+			<div class="ui-btn-right">
+				<a href="#main" data-inline="true"  data-role="button" data-corners="true" 
+				   id="add-to-risk-control-setting" style="background: #2BB8AA" data-transition="slide">风控设置</a>
+			</div>
+			<div style="display: none;">
+			    <div id="operate"></div>
+			    <span id="operate-text">操作</span>
+			</div>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" id="add-content" class="page-content" style="background: #fff;">
+	 
+				<table style="border: 0px;cellspacing:1%" id="add-account-table">
+					<tr>
+						<td><span>期货账号：</span></td>
+						<td><input type="tel" value=""/></td>
+						<td><span class="add-account-info"></span></td>
+					</tr>
+					<tr>
+						<td><span>密码：</span></td>
+						<td><input type="password" /></td>
+						<td><span class="add-account-info"></span></td>
+					</tr>
+					<tr>
+						<td><span>客户姓名：</span></td>
+						<td><input type="text" /></td>
+						<td><span class="add-account-info"></span></td>
+					</tr>
+					<tr>
+						<td><span>初始资金：</span></td>
+						<td><input type="tel" /></td>
+						<td><span class="add-account-info"></span></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" value="包含劣后资金" /></td>
+						<td><span>包含劣后资金</span></td>
+					</tr>
+					<tr>
+						<td><span>劣后资金：</span></td>
+						<td><input type="tel" /></td>
+						<td><span class="add-account-info"></span></td>
+				   </tr>
+				</table>
+				<a href="#" id="add-account-button" data-inline="true"  data-role="button" data-corners="true">保存</a>
+		</div>
+		
+		<div id="footer" class="nav-style" data-role="footer" data-theme="a" data-tap-toggle="false"
+				data-position="fixed">
+				<div data-role="navbar" data-grid="b" class="nav-style">
+					<ul>
+						<li  class="ui-btn-active">
+							<a href="#main" id="account-management" class="tab" data-transition="slide">账户管理</a>
+						</li>
+						<li>
+							<a href="#money-management-page" id="money" data-transition="slide" >资金</a>
+						</li>
+						<li>
+							<a href="#positions-page" id="positions" data-transition="slide">持仓</a>
+						</li>
+					</ul>
+			 </div>
+		</div>
+	</div>
+	
+	<!-- 资金管理页面 -->
+	<div data-theme="b" data-role="page" id="money-management-page" data-add-back-btn="false">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+			<h1>资金管理</h1>
+			<div class="ui-btn-right" id="operate-select-menu-money">
+				 
+			</div>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content" class="page-content">
+			<p></p>
+			<div class="ui-grid-b">
+				<div id="money-ui-block-b" style="border: 3px solid #797979;position:absolute;left: 2px;top:50px;
+				     text-align:center;background: #ffffff;" >
+				    <span>账户</span>
+					<ul style="width:90%;margin-left:-30px;">
+					</ul>
+				</div>
+				<div id="money-ui-block-c">
+					<span>资金情况：</span>
+					<ul style="width:100%;padding:0px;" id="money-management-ul">
+						<li>
+							<p>初始资金（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>持仓盈亏（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>静态权益（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>动态权益（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>占用保证金（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>可用资金（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>下单冻结（元）:</p>
+							<span></span>
+						</li>
+						<li>
+							<p>风险度（%）:</p>
+							<span></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		
+		<div id="footer" class="nav-style" data-role="footer" data-theme="a" data-tap-toggle="false"
+				data-position="fixed">
+				<div data-role="navbar" data-grid="b" class="nav-style">
+					<ul>
+						<li  class="ui-btn-active">
+							<a href="#main" id="account-management" data-transition="slide">账户管理</a>
+						</li>
+						<li>
+							<a href="#money-management-page" id="money" class="tab" data-transition="slide">资金</a>
+						</li>
+						<li>
+							<a href="#positions-page" id="positions" data-transition="slide">持仓</a>
+						</li>
+					</ul>
+			  </div>
+		   </div>
+	  </div>
+
+	<!-- 持仓 管理页面 -->
+	<div data-theme="b" data-role="page" id="positions-page"
+		data-add-back-btn="false">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+			<h1>持仓管理</h1>
+			<div class="ui-btn-right" id="operate-select-menu-position">
+				 
+			</div>
+		</div>
+
+		<div data-role="content" id="positions-management-content" class="page-content">
+			<div style="width:100%;overflow: scroll;" id="table-01"> 
+				<table id="positions-management-table" style="overflow: hidden;"class="positions-management-table" >
+					 
+				</table>
+			</div>
+
+			<div style="width:100%;overflow: scroll;" id="positions-management-table-info">
+				<table id="positions-management-table01" class="positions-management-table" style="overflow: hide;">
+				 
+				</table>
+			</div>
+		</div>
+
+		<div id="footer" class="nav-style" data-role="footer" data-theme="a" data-tap-toggle="false"
+			data-position="fixed">
+			<div data-role="navbar" data-grid="b" class="nav-style">
+				<ul>
+					<li class="ui-btn-active">
+					    <a href="#main"id="account-management" data-transition="slide">账户管理</a>
+					</li>
+					<li>
+					    <a href="#money-management-page" id="money" data-transition="slide">资金</a>
+					</li>
+					<li>
+					    <a href="#positions-page" id="positions" data-transition="slide" class="tab">持仓</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- 风控设置 页面 -->
+	<div data-theme="b" data-role="page" id="risk-control-setting-page" data-add-back-btn="false">
+		<div data-role="header" data-position="fixed" id="project-header" data-tap-toggle="false">
+		    <a href="#add-account-page" id="risk-control-basic-info" class="button-background" style="background: #2BB8AA;">基本信息</a>
+			<h1>风控设置</h1>
+			<div class="ui-btn-right">
+				<a href="#" data-inline="true"  data-role="button" data-corners="true" id="risk-save-button" style="background: #2BB8AA">保存</a>
+			</div>
+		</div>
+
+		<div data-role="content" id="risk-setting-content" class="page-content">
+			<div id="risk-content">
+			</div>
+			<a href="#" id="risk-add-button" data-inline="true"  data-role="button" data-corners="true" style="width: 90%;">添加风控策略</a>
+			
+		</div>
+
+		<div id="footer" class="nav-style" data-role="footer" data-theme="a" data-tap-toggle="false"
+				data-position="fixed">
+				<div data-role="navbar" data-grid="b" class="nav-style">
+					<ul>
+						<li  class="ui-btn-active">
+							<a href="#main" id="account-management" data-transition="slide" class="tab">账户管理</a>
+						</li>
+						<li>
+							<a href="#money-management-page" id="money" data-transition="slide">资金</a>
+						</li>
+						<li>
+							<a href="#positions-page" id="positions" data-transition="slide">持仓</a>
+						</li>
+					</ul> 
+			  </div>
+		   </div>
+	  </div>
+</body>
+</html>

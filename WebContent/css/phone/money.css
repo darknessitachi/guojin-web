@@ -1,0 +1,63 @@
+#money-management-ul li span{
+	color:#54BFFC;
+	margin-left: 10px;
+	padding:0px;
+	height:10px;
+	margin-top: 0px;
+}
+#money-management-ul li p{
+	text-align:left;
+	font-size: 16px;
+	padding:0px;
+	height:10px;
+	margin-left: 10px;
+}
+#money-management-ul li{
+	margin-top:1px;
+	padding:0px;
+}
+
+#money-ui-block-b ul li{
+	margin-top: 5px;
+	height: 20px;
+}
+
+#money-ui-block-b ul li div{
+	background: #2BB8AA;
+	height: 100%;
+}
+
+#money-ui-block-b ul li .account {
+	background: #D7D7B1;
+	border:1px solid #000;
+/* 	background-repeat: no-repeat; */
+/* 	background-size: 100% 100%; */
+/* 	-moz-background-size: 100% 100%; */
+/*     background-image: url('../../images/main/tab-background.png'); */
+}
+
+#money-ui-block-c{
+	border: 3px solid #797979; 
+	margin-left: 48%;
+	right:2px;
+	background: #FFFFCC;
+	padding:0px;
+}
+
+#money-ui-block-b{
+	border: 3px solid #797979;
+	float:left;
+	margin-left: 2px;
+	text-align:center;
+	background: #ffffff;
+	width:46%;
+}
+
+#money-ui-block-b span{
+	font-size: 20px;
+}
+
+#money-ui-block-b ul{
+	padding-left: 10px;
+	padding-right: 10px;
+}

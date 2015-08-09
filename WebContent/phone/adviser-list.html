@@ -1,0 +1,401 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>投顾设置</title>
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../css/phone/risk.css">
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.easyui.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/util.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/main.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/des.js?version=20150323"></script>
+	<script type="text/javascript">
+	var groupData = null;
+	
+	$(document).ready(function(){
+		bindFunction();
+		renderGroupList();
+		renderPermission(7);
+	});
+	
+	function bindFunction(){
+		$("#adviser-reset").change(function(){
+			if($(this).prop("checked")){//选中
+				$("#adviser-password").textbox("enable");
+				$("#adviser-password").textbox("enableValidation");
+			}else{
+				$("#adviser-password").textbox("disable");
+				$("#adviser-password").textbox("disableValidation");
+			}
+		});
+	}
+	
+	function renderPermission(permissionVal){
+		var firstBit = Math.floor(permissionVal/4);
+		var secondBit = Math.floor((permissionVal-4*firstBit)/2);
+		var thirdBit = Math.floor(permissionVal-4*firstBit-2*secondBit);
+		if(firstBit == 1){
+			$("#login").prop("checked",true);
+		}else{
+			$("#login").prop("checked",false);
+		}
+		if(thirdBit == 1){
+			$("#risk").prop("checked",true);
+		}else{
+			$("#risk").prop("checked",false);
+		}
+		if(secondBit == 1){
+			$("#close").prop("checked",true);
+		}else{
+			$("#close").prop("checked",false);
+		}
+	}
+	
+	function getPermissionVal(){
+		var firstBit = 0;
+		var secondBit = 0;
+		var thirdBit = 0;
+		if($("#login").prop("checked")){
+			firstBit = 1;
+		}
+		if($("#close").prop("checked")){
+			secondBit = 1;
+		}
+		if($("#risk").prop("checked")){
+			thirdBit = 1;
+		}
+		return firstBit*4+secondBit*2+thirdBit*1;
+	}
+	
+	function renderGroupList(){
+		$.get(basePath+"admin/group/get?token="+tokenVal,{},function(data){
+			groupData = eval("{" + data + "}");
+			$("#adviser-groupSelect").empty();
+			for(var i = 0 ; i < groupData.length ; i++){
+				$("#adviser-groupSelect").append("<option value='" + groupData[i].id + "'>" + groupData[i].name + "</option>")
+			}
+			$("#group-list").datagrid({
+				data:groupData,
+				singleSelect:true,
+				fitColumns:true,
+				fit:true,
+				toolbar: [{
+					iconCls: 'icon-add',
+					handler: function(){
+						$("#group-dlg").dialog('open').dialog('setTitle','添加投顾组');
+						$("#group-table").form("clear");
+					}
+				},'-',{
+					iconCls: 'icon-edit',
+					handler: function(){
+						$("#group-dlg").dialog('open').dialog('setTitle','编辑投顾组');
+						$("#group-table").form("clear");
+						var row = $("#group-list").datagrid("getSelected");
+						$("#group-table").form("load",row);
+					}
+				},'-',{
+					iconCls: 'icon-remove',
+					handler: function(){
+						$.messager.confirm("确认","确认删除吗？",function(r){
+							if(r){
+								var rows = $("#adviser-list").datagrid("getRows");
+								if(rows.length > 0){
+									$.messager.alert("提示","此投顾组下有未删除的投顾帐号，删除失败！");
+								}else{
+									var row = $("#group-list").datagrid("getSelected");
+									$.get(basePath + "admin/group/delete?token="+tokenVal,{id:row.id},function(){
+										$.messager.alert("提示","删除成功！");
+										renderGroupList();
+									})
+								}
+							}
+						});
+						
+					}
+				}],
+				columns:[[
+				          {field:'id',title:'组编号',width:100},
+				          {field:'name',title:'组名称',width:100},
+				          {field:'max',title:'允许投顾数',width:100},
+				          {field:'now',title:'当前投顾数',width:100},
+				          {field:'createTime',title:'创建日期',width:100}
+				          
+				      ]],
+				onSelect:function(rowIndex, rowData){
+					renderAdviserList(rowData.id);
+				}
+			});
+			$("#group-list").datagrid("selectRow",0);
+		});
+	}
+	
+	function renderAdviserList(groupId){
+		$.get(basePath+"admin/manager/get?token="+tokenVal+"&groupId="+groupId,{},function(data){
+			$("#adviser-list").datagrid({
+				data:eval("{" + data + "}"),
+				singleSelect:true,
+				fit:true,
+				fitColumns:true,
+				toolbar: [{
+					iconCls: 'icon-add',
+					handler: function(){
+						var allowMax = $("#group-list").datagrid("getSelected").max;
+						if(allowMax <= $("#adviser-list").datagrid("getRows").length){
+							$.messager.alert("提示","此投顾组下只允许添加" + allowMax + "个投顾！");
+							return;
+						}
+						$("#adviser-dlg").dialog('open').dialog('setTitle','添加投顾');
+						$("#adviser-table").form("clear");
+						$("#adviser-add-span").show();
+						$("#adviser-change-span").hide();
+						$("#adviser-reset").prop("checked",true);
+						$("#adviser-reset").change();
+						$("#adviser-groupSelect").val($("#group-list").datagrid("getSelected").id);
+						$("#adviser-confirmSelect").val(0);
+						renderPermission(7);
+					}
+				},'-',{
+					iconCls: 'icon-edit',
+					handler: function(){
+						if($("#adviser-list").datagrid("getRows").length <=0){
+							$.messager.alert("提示","请先添加投顾！");
+							return;
+						}
+						$("#adviser-dlg").dialog('open').dialog('setTitle','编辑投顾');
+						$("#adviser-table").form("clear");
+						var row = $("#adviser-list").datagrid("getSelected");
+						$("#adviser-table").form("load",row);
+						$("#adviser-add-span").hide();
+						$("#adviser-change-span").show();
+						$("#adviser-reset").prop("checked",false);
+						$("#adviser-reset").change();
+						renderPermission($("#permission").val());
+					}
+				},'-',{
+					iconCls: 'icon-remove',
+					handler: function(){
+						$.messager.confirm("确认","确认删除吗？",function(r){
+							if(r){
+								if($("#adviser-list").datagrid("getRows").length <=0){
+									$.messager.alert("提示","请先添加投顾！");
+									return;
+								}
+								var row = $("#adviser-list").datagrid("getSelected");
+								if(row.now > 0){
+									$.messager.alert("提示","此投顾下有" + row.now + "个管理的期货帐号，请先登录此投顾删除管理的期货帐号！");
+								}else{
+									$.get(basePath + "admin/manager/delete?token="+tokenVal,{id:row.id},function(){
+										$.messager.alert("提示","删除成功！");
+										renderAdviserList($("#group-list").datagrid("getSelected").id);
+									})
+								}
+							}
+						});
+					}
+				}],
+				columns:[[
+						  {field:'id',hidden:true},
+				          {field:'name',title:'投顾帐号',width:150},
+				          {field:'fullName',title:'投顾名称',width:200},
+				          {field:'groupName',title:'所属组名称',width:150},
+				          {field:'groupID',hidden:true},
+				          {field:'now',title:'当前管理账户数',width:150},
+				          {field:'autoConfirm',title:'结算单确认',width:150,
+				        		formatter:function(autoConfirmVal){
+				        	  		if(autoConfirmVal == "1"){
+				        	  			return "自动";
+				        	  		}else{
+				        	  			return "手动";
+				        	  		}
+				          		}},
+				          {field:'permission',title:'权限',width:300,formatter:function(permissionVal){
+								var firstBit = Math.floor(permissionVal/4);
+								var secondBit = Math.floor((permissionVal-4*firstBit)/2);
+								var thirdBit = Math.floor(permissionVal-4*firstBit-2*secondBit);
+								var returnVal = "";
+								if(firstBit == 1){
+									returnVal += "【可登录】";
+								}
+								if(thirdBit == 1){
+									returnVal += "【可风控】";
+								}
+								if(secondBit == 1){
+									returnVal += "【可强平】";
+								}
+								if(returnVal == ""){
+									returnVal = "无任何权限";
+								}
+								return returnVal;
+				          }}
+				      ]]
+			});
+			$("#adviser-list").datagrid("selectRow",0);
+		});
+	}
+	
+	function submitGroup(){
+		var submitObj = {
+			onSubmit: function(){
+				var isValid = $(this).form('validate');
+				if (!isValid){
+					$.messager.alert("提示","填写有误");
+					$.messager.progress('close');	// hide progress bar while the form is invalid
+				}else{
+					var currentAdvisers = $("#adviser-list").datagrid("getRows").length;
+					if(currentAdvisers > $("#group-max").val()){
+						$.messager.alert("提示","【允许够顾数】填写有误，此投顾组下已经有" + currentAdvisers + "个投顾了！");
+						return false;
+					}else{
+						$.messager.progress();
+					}
+				}
+				return isValid;	// return false will stop the form submission
+			},
+			success: function(){
+				$.messager.progress('close');	// hide progress bar while submit successfully
+				$.messager.alert("提示","保存成功");
+				renderGroupList();
+				$("#group-dlg").dialog('close');
+			}
+		};
+		var groupid = $("#group-id").val();
+		if(groupid == null || groupid == ""){//新增
+			submitObj.url = basePath + "admin/group/add?token="+tokenVal;
+		}else{//修改
+			submitObj.url = basePath + "admin/group/change?token="+tokenVal;
+		}
+		$("#group-table").form("submit",submitObj);
+	}
+	
+	function submitAdviser(){
+		var submitObj = {
+			onSubmit: function(){
+				$("#groupName").val($("#adviser-groupSelect").find("option:selected").text());
+				$("#permission").val(getPermissionVal());
+				var isValid = $(this).form('validate');
+				if (!isValid){
+					$.messager.alert("提示","填写有误");
+					$.messager.progress('close');	// hide progress bar while the form is invalid
+				}else{
+					var row = $("#adviser-list").datagrid("getSelected");
+					if(row != undefined && row != null && row.now > 2){
+						$.messager.progress({interval:row.now*200});
+					}else{
+						$.messager.progress();
+					}
+					$("#adviser-password-encode").val(strEnc($("#adviser-password").val(),key1,key2,key3));
+				}
+				return isValid;	// return false will stop the form submission
+			},
+			success: function(data){
+				if(data == "1"){
+					$.messager.progress('close');	// hide progress bar while submit successfully
+					$.messager.alert("提示","保存成功");
+					renderAdviserList($("#group-list").datagrid("getSelected").id);
+					$("#adviser-dlg").dialog('close');
+				}else{
+					$.messager.progress('close');
+					$.messager.alert("错误","投顾用户名重复 或 未知异常！");
+				}
+			}
+		};
+		var adviserId = $("#adviserId").val();
+		if(adviserId == null || adviserId == ""){//新增
+			submitObj.url = basePath + "admin/manager/add?token="+tokenVal;
+		}else{//修改
+			submitObj.url = basePath + "admin/manager/change?token="+tokenVal;
+		}
+		$("#adviser-table").form("submit",submitObj);
+	}
+	
+	</script>
+</head>
+<body>
+	<div id="cash_layout" class="easyui-layout" data-options="fit:true">
+		<div data-options="iconCls:'icon-man',title:'投顾组管理',region:'west',collapsible:false,split:true" style="width:40%;">
+			<div id="group-list" data-options="fit:true">
+			</div>
+		</div>
+		<div data-options="iconCls:'icon-man',title:'投顾管理',region:'center',collapsible:false,split:true" style="width:60%;">
+			<div id="adviser-list" data-options="fit:true">
+			</div>
+		</div>
+	</div>
+	<div id="group-dlg" class="easyui-dialog"
+		style="width: 330px;height:160px;padding:10px 20px;" shadow="true" closed="true"
+		buttons="#group-dlg-buttons">
+		<form id="group-table" method="post">
+			<table style="width: 100%">
+				<tr style="height:28px;">
+					<td><label>组名称:</label> </td>
+					<td><input id="group-name" name="name" class="easyui-textbox" validtype="length[1,20]" invalidMessage="有效长度1-20" data-options="required:true,prompt:'组名称！'"></td>	
+				</tr>
+				<tr style="height:28px;">
+					<td><label>允许投顾数:</label> </td>
+					<td><input id="group-max" name="max"  data-options="required:true,prompt:'允许投顾数！'" validtype="number" class="easyui-textbox"></td>
+				</tr>
+			</table>
+			<input type="hidden" id="group-id" name="id"/>
+		</form>
+	</div>
+	<div id="group-dlg-buttons" align="center">
+        <a href="#" class="easyui-linkbutton c6" id="change-password-button" onclick="submitGroup();" iconCls="icon-save" style="width:90px">保存</a>
+    </div>
+    
+    <div id="adviser-dlg" class="easyui-dialog"
+		style="width: 360px;height:300px;padding:10px 20px;" shadow="true" closed="true"
+		buttons="#advise-dlg-buttons">
+		<form id="adviser-table" method="post">
+			<table style="width: 100%">
+				<tr style="height:28px;">
+					<td><label>投顾帐号:</label> </td>
+					<td><input id="adviser-name" name="name" class="easyui-textbox" validtype="length[1,20]" invalidMessage="有效长度1-20" data-options="required:true,prompt:'投顾帐号！'"></td>	
+				</tr>
+				<tr style="height:28px;">
+					<td><label>投顾姓名:</label> </td>
+					<td><input id="adviser-fullName" name="fullName"  data-options="required:true,prompt:'投顾姓名！'" validtype="length[1,20]" invalidMessage="有效长度1-20" class="easyui-textbox"></td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>所属组:</label> </td>
+					<td><select id="adviser-groupSelect" name="groupID"></select></td>
+				</tr>
+				<tr style="height:28px;">
+					<td>
+					<span id="adviser-add-span"><label>投顾密码:</label></span>
+					<span id="adviser-change-span"><input id="adviser-reset" type="checkbox"/>重设密码</span>
+					</td>
+					<td>
+						<input id="adviser-password" type="password" data-options="required:true,prompt:'密码！'" validtype="length[6,20]" invalidMessage="有效长度6-20" class="easyui-textbox">
+						<input id="adviser-password-encode" name="password" type="hidden">
+					</td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>结算单确认:</label></td>
+					<td>
+						<select id="adviser-confirmSelect" name="autoConfirm">
+							<option value="1">自动</option>
+							<option value="0" selected="selected">手动</option>
+						</select>
+					</td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>允许操作:</label></td>
+					<td>
+						<input id="login" type="checkbox"/>登录&nbsp;
+						<input id="close" type="checkbox"/>设置强平&nbsp;
+						<input id="risk" type="checkbox"/>设置风控
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" id="adviserId" name="id"/>
+			<input type="hidden" id="groupName" name="groupName"/>
+			<input type="hidden" id="permission" name="permission"/>
+		</form>
+	</div>
+	<div id="advise-dlg-buttons" align="center">
+        <a href="#" class="easyui-linkbutton" id="change-password-button" onclick="submitAdviser();" iconCls="icon-save" style="width:90px">保存</a>
+    </div>
+</body>
+</html>

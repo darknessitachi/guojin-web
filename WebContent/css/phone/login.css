@@ -1,0 +1,80 @@
+
+p{
+	font-weight:bold;
+	font-family:'微软雅黑';
+	color:#000;
+	font-size: 27px;
+	text-align:center;
+	margin-top: 0px; 
+	margin-bottom: 0px;
+}
+#project-header {
+	background:#2BB8AA;
+	background-position: center;
+	border: 0px;
+}
+
+#login{
+	height:100%;
+}
+
+#login-content {
+/* 	background-size: 100% 100%; */
+/* 	-moz-background-size: 100% 100%;  */
+/* 	background:url(../../images/login/background.png);   */
+/*     filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";   */
+    background-image:url('../../images/login/background.png');
+    background-attachment:fixed;
+    background-size:100% 100%;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../images/login/background.png',sizingMethod='scale');
+	width:100%;
+	height:100%;
+	left: 0px;
+}
+
+#content-logo {
+	background: url(../../images/login/logo.gif) no-repeat;
+	background-size: 50% 50%;
+	-moz-background-size: 50% 50%; /* �ϰ汾�� Firefox */
+	float:left;
+	width: 50px;
+	height: 50px;
+	margin-left: 5px;
+    margin-top: 5px;
+}
+
+#content-logo-text {
+	padding-left: 0px;
+	padding-top:5px;
+	color:#000;
+}
+
+#login-form ul li{
+	margin-left: 10%;
+}
+
+#login-form ul li input{
+	background: #fff;
+	color:#000;
+}
+#login-form ul li div{
+	width:80%;
+}
+#login-input{
+	margin-top:50px;
+}
+
+#remember-login{
+	margin-left:-50px;
+	margin-top: 1px;
+}
+#login-button{
+	margin-top: 0px;
+	width:70%;
+	border-color: #2BB8AA;
+    background: #2BB8AA;
+	font-family:'微软雅黑';
+	color:#000;
+	font-size: 17px;
+	text-align:center;
+}

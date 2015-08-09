@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>风控设置</title>
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/icon.css">
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.easyui.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/util.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/main.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/cash-manage.js?version=20150323"></script>
+	<script type="text/javascript">	
+	$(document).ready(function(){
+		renderAccountList();
+	});
+	</script>
+</head>
+<body>
+	<div id="cash_layout" class="easyui-layout" style="width:90%;height:500px;">
+		<div data-options="iconCls:'icon-man',title:'管理帐号',region:'west',collapsible:false" style="width:30%;">
+			<ul id="accounts">
+			</ul>
+		</div>
+		<div data-options="title:'资金详情',region:'east',collapsible:false" style="width:70%;">
+			<div id="cashDetail" class="easyui-panel" style="border:0px;width:200px;padding:10px 20px">
+				<div style="margin-bottom:10px">
+					<div><b>初始资金（元）:</b></div>
+					<input id="initFunds" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>持仓盈亏（元）:</b></div>
+					<input id="profit" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>静态权益（元）:</b></div>
+					<input id="staticRight" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>动态权益（元）:</b></div>
+					<input id="dynamicRight" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>占用保证金（元）:</b></div>
+					<input id="deposit" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>可用资金（元）:</b></div>
+					<input id="expendableFunds" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>下单冻结（元）:</b></div>
+					<input id="freeze" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+				<div style="margin-bottom:10px">
+					<div><b>风险度（%）:</b></div>
+					<input id="risk" class="easyui-textbox" data-options="readonly:true" style="width:100%;height:32px">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

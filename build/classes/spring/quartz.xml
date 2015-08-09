@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="collectConductor" class="com.xun360.guojin.dataexchange.conductor.CollectJobConductor" />
+	
+	<bean id="startCollect"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" >
+			<ref bean="collectConductor" />
+		</property>
+		<property name="targetMethod">
+			<value>startCollect</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+	
+	<bean id="stopCollect"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" >
+			<ref bean="collectConductor" />
+		</property>
+		<property name="targetMethod">
+			<value>stopCollect</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+	</bean>
+
+	<bean id="startCollectTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="startCollect" />
+		</property>
+		<property name="cronExpression">
+            <value>0 0 6 * * ?</value>
+        </property>
+	</bean>
+	
+	<bean id="stopCollectTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="stopCollect" />
+		</property>
+		<property name="cronExpression">
+            <value>0 0 22 * * ?</value>
+        </property>
+	</bean>
+
+	<!--管理触发器的总设置,管理我们的触发器列表,可以在bean的list中放置多个触发器。 -->
+	<bean id="schedulerFactory" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="stopCollectTrigger" />
+				<ref local="startCollectTrigger" />
+			</list>
+		</property>
+		<property name="autoStartup" value="true"/>
+		<property name="schedulerName" value="cronScheduler" />
+	</bean>
+</beans>

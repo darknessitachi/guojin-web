@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>风控设置</title>
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../css/phone/risk.css">
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.easyui.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/risk.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/util.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/main.js?version=20150323"></script>
+	<script type="text/javascript">
+	var clientIDVal = getCookie("clientId");
+	var permission = getCookie('permission');
+// 	var tokenVal = "3B3F59FD955D73F8A0284DBD43EE2CE5";
+// 	alert(clientIDVal);
+// 	alert(tokenVal);
+// 	var clientIDVal = "23";
+	
+	$(document).ready(function(){
+		$.ajax({
+			url:basePath+"configure/get",
+	        dataType: 'json',
+			type:"get",
+	        data:{token:tokenVal,clientID:clientIDVal},
+			cache:false,
+			success:function(response){
+				if(response[0].length==0){
+					$.messager.show({
+						title:'提示',
+						msg:"暂时没有数据!",
+						timeout:1000,
+						style:{top:50}
+					});
+				}else{
+					//每次进入风控设置都去数据库读取数据并显示到页面
+					var data = response;
+					var types = data[0];
+					var regexes = data[1];
+					//初始化
+					if(regexes.length > 0 && types.length > 0 ){
+						risk_main.initByRegexes(regexes, types)
+					}
+// 					var regexes = [
+// 					    		    "1*32.5*2*3135*1*0",
+// 					    		    "1*32.5*2*3135*2*13.5*3600000*10800000",
+// 					    		    "1*3600000*14400000*2*18000000*21600000*0*0*0",
+// 					    		    "1*32.5*2*3135*2*13.5*IF",
+// 					    		    "1*32.5*1*13.5*2*13.5",
+// 					    		    "0*0*1*31.5*1*0"
+// 					    		  ];
+// 					var types = ["1","2","3","4","5","6"];
+				}
+			}
+		});	
+		
+	});
+	
+// 	function test(){
+// 		window.top.showRiskMsg("00000013",clientIDVal,'1')
+// 	}
+	</script>
+</head>
+<body>
+	<div class="easyui-panel" style="padding:5px;width:100%;">
+		<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'" onclick="risk_main.addRiskIndicator()">添加风控指标</a>
+		<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'" onclick="risk_main.removeRiskIndicator()">删除风控指标</a>
+		<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save'" onclick="risk_main.saveData()">保存</a>
+		<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'" onclick="window.location.href='account-manage.html'">返回账户列表</a>
+<!-- 		<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'" onclick="test()">提示</a> -->
+	</div>
+	<div id="risk_accordion" class="easyui-accordion" fit="true">
+	</div>
+</body>
+</html>

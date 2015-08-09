@@ -1,0 +1,67 @@
+
+h1{
+    font-size:20px;
+    margin-left: 10px;
+}
+
+.box-shadow {
+	filter: progid:DXImageTransform.Microsoft.Shadow(color='#969696',
+		Direction=135, Strength=5); /*for ie6,7,8*/
+	background-color: #fff;
+	-moz-box-shadow: 2px 2px 5px #969696; /*firefox*/
+	-webkit-box-shadow: 2px 2px 5px #969696; /*webkit*/
+	box-shadow: 2px 2px 20px #969696; /*opera或ie9*/
+}
+
+div span{
+	font-size: 12px;
+}
+.adviser-list-table-info a div span{
+	font-size: 16px;
+}
+
+.adviser-list-table-info .need-float{
+	float:left;
+}
+
+.adviser-list-table-info a{
+	margin-left: 10px;
+}
+
+tr th{
+	font-size:15px;
+}
+
+.popur-box table tbody tr td input[type="text"] {
+	margin-top:10px;
+	margin-left:5px;
+	width: 120px;
+	height: 30px;
+	border: 1px solid #E1E1E1;
+	padding: 0px 5px;
+	box-shadow: 1px 1px 5px #E1E1E1 inset;
+}
+
+.popur-box table tbody tr td input[type="password"] {
+	margin-top:10px;
+	margin-left:5px;
+	width: 120px;
+	height: 30px;
+	border: 1px solid #E1E1E1;
+	padding: 0px 5px;
+	box-shadow: 1px 1px 5px #E1E1E1 inset;
+}
+
+.popur-box table tbody tr td input[type="checkbox"] {
+	margin-top:10px;
+	margin-left:5px;
+}
+
+#table-table tbody tr td {
+	text-align: center;
+}
+
+table tbody tr td span{
+	text-align: center;
+	margin-left: 5px;
+}

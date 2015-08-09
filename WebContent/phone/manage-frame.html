@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>国金期货</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.4/themes/icon.css">
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.easyui.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/util.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/main.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/des.js?version=20150323"></script>
+	<script type="text/javascript">
+		var adminConfig = {
+			"投顾管理" : basePath+"phone/adviser-list.html"
+		}
+		var otherConfig = {
+			"账户管理":basePath+"phone/account-manage.html"
+// 			,
+// 			"资金管理":basePath+"phone/cash_manage.html",
+// 			"持仓管理":basePath+"phone/position_manage.html"
+		}
+		var config = {
+		}
+		var leftTime = [0,0,0];
+		
+		$(document).ready(function(){
+			var loginUser = getCookie("name");
+			if(loginUser == "admin"){
+				config = adminConfig;
+			}else{
+				config = otherConfig;
+			}
+			$("#loginMessage").text(loginUser);
+			for(var titleStr in config){
+				$("#main-management-tab").tabs("add",{
+					"title" : titleStr,
+					"fit" : true,
+					content : '<iframe width="100%" height="100%" src="" style="border: 0px;" scrolling="no"></iframe>'
+				});
+			}
+			$("#main-management-tab").tabs({
+				onSelect : function(title,index){
+					var frameDom = $("iframe").eq(index);
+					if(frameDom.attr("src") == ""){
+						frameDom.attr("src",config[title]);
+						leftTime[index] = 10;
+					}else if(leftTime[index] < 0){//时间 间隔大于10秒
+						frameDom.attr("src",config[title]);
+						leftTime[index] = 10;
+					}
+				}
+			});
+			var j = 0;
+			for(var i in config){
+				if(j > 0) break;
+				else{
+					$("iframe").eq(0).attr("src",config[i]);
+				}
+				j++;
+			}
+			$("#password-table").form({
+				url: basePath+"user/modifyPassword?token="+getCookie("token"),
+				onSubmit: function(){
+					var isValid = $(this).form('validate');
+					if (!isValid){
+						$.messager.progress('close');	// hide progress bar while the form is invalid
+						$.messager.alert("提示","填写有误");
+					}else{
+						var encodeOldPasswd = strEnc($("#oldPassword").val(),key1,key2,key3);
+						var encodeNewPasswd = strEnc($("#newPassword1").val(),key1,key2,key3);
+						$("#oldPasswordEncode").val(encodeOldPasswd);
+						$("#newPasswordEncode").val(encodeNewPasswd);
+					}
+					return isValid;	// return false will stop the form submission
+				},
+				success: function(data){
+					$.messager.progress('close');	// hide progress bar while submit successfully
+					if(data == "1"){//修改成功
+						$.messager.alert("提示","修改密码成功");
+						$("#password-dlg").dialog('close');
+					}else{//修改失败
+						$.messager.alert("提示","修改密码失败，填写的原始用户名或密码错误");
+					}
+				}
+			});
+		});
+		setInterval(leftTimeChange, 1000);
+		function leftTimeChange(){
+			for(var i = 0 ; i < leftTime.length ; i++){
+				leftTime[i] = leftTime[i] - 1;
+			}
+		}
+		
+		function showRiskMsg(accountName,clientID,type){
+			var show = {
+				title:'提示',
+				timeout:10000,
+				showType:'slide',
+				style:{
+					top:document.body.clientHeight-140,
+					left: document.body.clientWidth - 270
+				}
+			};
+			show.msg = "账户【" + accountName + "】,"
+			if(type == "1"){//警告
+				show.msg = show.msg + '达到风控设置的预警线!';
+				play("../audio/warn.mp3");
+			}else if(type == "2"){//平仓
+				show.msg = show.msg + '达到风控设置的平仓线!';
+				play("../audio/close.mp3");
+			}else{
+				return;
+			}
+			show.msg = show.msg + '<div style="cursor:pointer;color:blue;" onclick="javascript:goToMsg(\''+ clientID + '\');">点击查看</div>';
+			$.messager.show(show);
+		}
+		
+		function goToMsg(accountId){
+			setCookie('clientId',accountId,30);
+			$("iframe").eq(0).attr("src","risk-control-info.html");
+		}
+		
+		function showPasswordPanel(){
+			$("#password-dlg").dialog('open').dialog('setTitle','修改密码');
+			$("#password-table").form('clear');
+			$("#loginName").textbox("setValue",getCookie("name"));
+		}
+		
+		function submitPassword(){
+			$("#password-table").form("submit");
+		}
+		
+		//扩展easyui表单的验证
+		$.extend($.fn.validatebox.defaults.rules, {
+			eq : {//value值为文本框中的值
+		        validator: function (value, param) {
+		        	var tarVal = $(param[0]).textbox("getValue");
+		        	if(tarVal != value){
+						$.fn.validatebox.defaults.rules.eq.message = '输入和目标不一致';
+						return false;
+		        	}else{
+		        		return true
+		        	}
+		        },
+		        message: "输入和目标不一致"
+		    }
+		});
+		
+	</script>
+	<script type="text/javascript">
+	function play(c) {
+		$("#play-audio")[0].contentWindow.play(c);
+	}
+</script>
+</head>
+
+<body>
+	<div style="position: absolute;right:50px;z-index:9999999999;padding: 2px;">
+		<font style="font-size: 12px;">登录投顾：</font>
+		<font style="font-size: 15px;" color="blue" id="loginMessage"></font>&nbsp;&nbsp;
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-lock'" plain="true" onclick="showPasswordPanel();">&nbsp;修改密码</a>&nbsp;&nbsp;
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'" plain="true" onclick="javascript:window.location.href='../index.html'">&nbsp;注销</a>
+	</div>
+	<div class="easyui-tabs" data-options="fit:true" id="main-management-tab">
+	</div>
+	<div id="password-dlg" class="easyui-dialog"
+		style="width: 330px; height: 260px; padding: 10px 20px" shadow="true" closed="true"
+		buttons="#dlg-buttons">
+		<form id="password-table" method="post" action="user/modifyPassword" novalidate>
+			<table style="width: 100%">
+				<tr style="height:28px;">
+					<td><label>投顾帐号:</label> </td>
+					<td><input readonly="readonly" id="loginName" name="loginName" class="easyui-textbox" validtype="length[1,20]" invalidMessage="有效长度1-20" data-options="required:true,prompt:'请输入帐号！'"></td>	
+				</tr>
+				<tr style="height:28px;">
+					<td><label>原始密码:</label> </td>
+					<td>
+						<input type="password" id="oldPassword" data-options="required:true,prompt:'原始密码'" validtype="length[6,20]" invalidMessage="有效长度6-20" class="easyui-textbox">
+						<input id="oldPasswordEncode" name="oldPassword" type="hidden">
+					</td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>新密码:</label> </td>
+					<td>
+						<input type="password" id="newPassword1" data-options="required:true,prompt:'新密码'" validtype="length[6,20]" invalidMessage="有效长度6-20" class="easyui-textbox">
+						<input id="newPasswordEncode" name="newPassword" type="hidden">
+					</td>
+						
+				</tr>
+				<tr style="height:28px;">
+					<td><label>重复新密码:</label> </td>
+					<td>
+						<input type="password" id="newPassword2" data-options="required:true,prompt:'新密码'" validType="eq['#newPassword1']" invalidMessage="两次密码输入要一至" class="easyui-textbox">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg-buttons" align="center">
+        <a href="#" class="easyui-linkbutton c6" id="change-password-button" onclick="submitPassword();" iconCls="icon-save" style="width:90px">保存</a>
+    </div>
+    <iframe id="play-audio" style="display: none;" src="play-audio.html"></iframe>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>国金期货</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="../js/jquery-easyui-1.4/themes/default/easyui.css" type="text/css">
+    <link rel="stylesheet" href="../js/jquery-easyui-1.4/themes/icon.css" type="text/css" >
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/jquery-easyui-1.4/jquery.easyui.min.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/util.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/main.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/account-manage.js?version=20150323"></script>
+	<script type="text/javascript" src="../js/phone/des.js?version=20150323"></script>
+</head>
+
+<body height="95%">
+	<div id="toolbar">
+		<a href="#" class="easyui-linkbutton" id="add-account-button"
+			iconCls="icon-add" plain="true">添加账户</a> 
+	    <a href="#" class="easyui-linkbutton" id="dialog-basic-info"
+			iconCls="icon-edit" plain="true">查看编辑账户</a>
+	    <a href="#" class="easyui-linkbutton" id="dialog-delete-account"
+			iconCls="icon-remove" plain="true">删除账户</a>
+		<a href="#" class="easyui-linkbutton" id="dialog-risk-control-set"
+			iconCls="icon-save" plain="true" >风控设置</a> 
+		<a href="#" class="easyui-linkbutton" id="risk-control-info-view"
+			iconCls="icon-help" plain="true" >风控消息查阅</a>
+	</div>
+
+	<div id="cash_layout" class="easyui-layout" data-options="fit:true">
+		<div data-options="iconCls:'icon-man',title:'管理帐号',region:'west',split:true" style="width:20%;" collapsible="false">
+			<ul id="accounts" data-options="fit:true">
+			</ul>
+		</div>
+		<div data-options="region:'center',split:true" style="width:80%;">
+			<div class="easyui-layout" data-options="fit:true">
+				<div data-options="region:'north',split:true,border:false,minHeight:20,maxHeight:270,maxWidth:2000" class="easyui-layout">
+					<div data-options="region:'center',split:true,border:false" style="width:30%;">
+						<div id="baseMsg" class="easyui-panel" fit="true" title="基本信息" style="padding:10px;">
+							<table style="width: 100%">
+								<tr style="height:45px;">
+									<td align="center" width="35%">
+										<label>期货账号:</label> 
+									</td>
+									<td align="left">
+										<input id="investorID" class="easyui-textbox" data-options="readonly:true" style="height:35px">
+									</td>
+								</tr>
+								<tr style="height:45px;">
+									<td align="center" width="35%">
+										<label>客户姓名:</label> 
+									</td>
+									<td align="left">
+										<input id="clientName" class="easyui-textbox" data-options="readonly:true" style="height:35px">
+									</td>
+								</tr>
+								<tr style="height:45px;">
+									<td align="center" width="35%">
+										<label>劣后资金（元）:</label> 
+									</td>
+									<td align="left">
+										<input id="afterFunds" class="easyui-numberbox" data-options="readonly:true" style="height:35px">
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div data-options="region:'east',split:true" style="width:70%;" collapsible="false">
+						<div id="cashMsg" class="easyui-panel" title="资金信息" data-options="border:false,fit:true,tools:[{iconCls:'icon-reload',handler:function(){refreshMoneyDetailData()}}]">
+							<table style="width: 100%">
+								<tr style="height:45px;">
+									<td align="right" width="20%"><label>初始资金（元）:</label></td>
+									<td width="30%"><input id="initFunds" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+									<td align="right"width="20%"><label>持仓盈亏（元）:</label></td>
+									<td width="30%"><input id="profit" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+								</tr>
+								<tr style="height:45px;">
+									<td align="right" width="20%"><label>静态权益（元）:</label></td>
+									<td width="30%"><input id="staticRight" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+									<td align="right"width="20%"><label>动态权益（元）:</label></td>
+									<td width="30%"><input id="dynamicRight" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+								</tr>
+								<tr style="height:45px;">
+									<td align="right" width="20%"><label>占用保证金（元）:</label></td>
+									<td width="30%"><input id="deposit" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+									<td align="right"width="20%"><label>可用资金（元）:</label></td>
+									<td width="30%"><input id="expendableFunds" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+								</tr>
+								<tr style="height:45px;">
+									<td align="right" width="20%"><label>下单冻结（元）:</label></td>
+									<td width="30%"><input id="freeze" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+									<td align="right"width="20%"><label>风险度（%）:</label></td>
+									<td width="30%"><input id="risk" class="easyui-textbox" data-options="readonly:true" style="height:35px"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div data-options="region:'center',split:true" >
+					<div class="easyui-panel" title="持仓详细信息" data-options="fit:true,border:false,tools:[{iconCls:'icon-reload',handler:function(){refreshPositionsDetail()}}]">
+						<table id="positionMsg" fitColumns="true" fit="true" class="easyui-datagrid" style="width: 100%;" singleselect="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div data-options="region:'south',height:40" >
+		</div>
+	</div>
+	<div id="account-dlg" class="easyui-dialog"
+		style="width: 400px; height: 300px; padding: 10px 20px" shadow="true" closed="true"
+		buttons="#dlg-buttons">
+		<form id="account-table" method="post">
+			<table style="width: 100%">
+				<tr style="height:28px;">
+					<td><label>期货账号:</label> </td>
+					<td><input name="name" class="easyui-textbox" validType="integer[1,20]" data-options="required:true,prompt:'请输入帐号！'"></td>	
+				</tr>
+				<tr style="height:28px;">
+					<td><label>密码:</label> </td>
+					<td>
+						<input type="password" id="password" name="password" data-options="required:true" validtype="length[1,20]" invalidMessage="有效长度1-20" class="easyui-textbox">
+					</td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>客户姓名:</label> </td>
+					<td><input name="clientName" class="easyui-textbox" validtype="length[1,20]" invalidMessage="有效长度1-20"  data-options="required:true,prompt:'请输入姓名！'"></td>	
+				</tr>
+				<tr style="height:28px;">
+					<td><label>初始资金（元）:</label> </td>
+					<td><input id="formInitFunds" name="initFunds" class="easyui-textbox" validType="integer[1,9]" data-options="required:true,prompt:'请输入0-10亿的数字！'"></td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>包含劣后资金</label> <input id="containAfterFunds" type="checkbox"></td>
+					<td></td>
+				</tr>
+				<tr style="height:28px;">
+					<td><label>劣后资金（元）:</label> </td>
+					<td><input id="formAfterFunds" name="afterFunds" class="easyui-textbox" data-options="required:true,validType:{largeThan:['#formInitFunds','【初始资金】'],integer:[1,9]},prompt:'劣后需要小于【初始资金】'"/></td>
+				</tr>
+			</table>
+			<input name="clientID" type="hidden"/>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+        <a href="#" class="easyui-linkbutton c6" id="add-account-button" iconCls="icon-save" style="width:90px">保存</a>
+    </div>
+</body>
+</html>
