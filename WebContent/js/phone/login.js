@@ -90,10 +90,6 @@ function loginAction(name,pwd){
 			if(data.token==""||data.token==null){//返回的null表示登录不成功
 				$.messager.alert("登录失败","用户名或者密码错误!");
 			}else{
-				if(data.redirectIp != null && data.redirectIp != window.location.host){
-					window.location.href="http://" + data.redirectIp + window.location.pathname + "?loginName=" + name + "&loginPassword=" + pwd;
-					return;
-				}
 				token = data.token;
 				permission = data.permission;
 				//用户点击了记住登录名按钮，则在此将登录名和密码保存到本地
@@ -102,6 +98,10 @@ function loginAction(name,pwd){
 				setCookie('loginRememberFlag',loginRememberFlag,30);
 				setCookie('name',name,30);
 				setCookie('pwd',pwd,30);
+				if(data.redirectIp != null && data.redirectIp != window.location.host){
+					window.location.href="http://" + data.redirectIp + window.location.pathname + "?loginName=" + name + "&loginPassword=" + pwd;
+					return;
+				}
 				window.location.href="phone/manage-frame.html";
 			}
 		}
