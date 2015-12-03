@@ -675,8 +675,8 @@ function VarietyRisk(jqueryDocObj,idx,regex){
 	this.help_info = "<b>指标描述</b>：<br />" +
 					 "&nbsp;&nbsp;对交易品种进行监控，可以分别对品种或者合约进行监控。输入品种则表示对品种的监控，输入合约号则表示对指定合约进行监控。（<font color=\"red\">注意大小写，设置错误该指标不生效</font>）<br />"+
 					 "<b>风控指标</b>：<br />" +
-					 "&nbsp;&nbsp;预警线/平仓线（比例）：【动态权益/初始资金】小于设定值，发出报警/触发平仓；<br />" + 
-					 "&nbsp;&nbsp;预警线/平仓线（金额）：【动态权益】小于设定值，发出报警/触发平仓。";
+					 "&nbsp;&nbsp;预警线/平仓线（比例）：【品种动态权益/初始资金】大于设定值，发出报警/触发平仓；<br />" + 
+					 "&nbsp;&nbsp;预警线/平仓线（金额）：【品种动态权益】大于设定值，发出报警/触发平仓。";
 	BaseRiskClass.apply(this, arguments);
 	//初始化
 	//根据html获得jquery对象
