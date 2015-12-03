@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.jctp.CThostFtdcQrySettlementInfoConfirmField;
+import net.jctp.CThostFtdcReqAuthenticateField;
 import net.jctp.CThostFtdcReqUserLoginField;
 import net.jctp.CThostFtdcSettlementInfoConfirmField;
 import net.jctp.CThostFtdcUserLogoutField;
@@ -103,6 +104,19 @@ public class TraderApiEntryFactory {
 				traderApi.SyncConnect(ExchangeConfig.TRADER_FRONT_URL);
 			}
 			if (!traderApi.isLogin()) {
+				//如果不配置就去认证
+				if(ExchangeConfig.AUTH_CODE != null){
+					if (log.isDebugEnabled()) {
+						log.debug("账户" + userId + "认证交易接口");
+					}
+					CThostFtdcReqAuthenticateField authenticateField = new CThostFtdcReqAuthenticateField();
+					authenticateField.UserID = userId;
+					authenticateField.BrokerID = ExchangeConfig.BROKER_ID;
+					authenticateField.AuthCode = ExchangeConfig.AUTH_CODE;
+					authenticateField.UserProductInfo = ExchangeConfig.USER_PRODUCT_INFO;
+					traderApi.SyncAllReqAuthenticate(authenticateField);
+					traderApi.SyncReqAuthenticate(authenticateField);
+				}
 				if (log.isDebugEnabled()) {
 					log.debug("账户" + userId + "登录交易接口");
 				}
